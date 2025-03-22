@@ -148,7 +148,7 @@ async def points(ctx):
         ))
         rows_per_chunk = 32
         data_chunks = [contribuciones_ordenadas[i:i + rows_per_chunk] for i in range(0, len(contribuciones_ordenadas), rows_per_chunk)]
-        table_header = f"📝 **Contribuciones del mes {hoy.strftime('%b')}({suma_total}dvp) en {data_chunks} partes** 📝\n"
+        table_header = f"📝 **Contribuciones del mes {hoy.strftime('%b')}({suma_total: <10.2f}dvp) en {data_chunks} partes** 📝\n"
         await ctx.send(table_header)
         for i, chunk in enumerate(data_chunks):
             tabla = PrettyTable()
@@ -168,24 +168,39 @@ async def points(ctx):
 @bot.command()
 async def daypoints(ctx):
     hoy = datetime.today()
+    land = 138000
 
     try:
-        resultado = fetch_segmento(hoy, hoy)
-        contribuciones_agrupadas = agrupar_contribuciones(resultado['contribution'])
-        contribuciones_ordenadas = sorted(contribuciones_agrupadas, key=lambda x: x['total'], reverse=True)
+        urls = make_urls(land, hoy, hoy)
+        resultado = get_lands_data(urls)
+        contribuciones_totales = process_lands_data(resultado)
+        suma_total = reduce(
+            lambda acumulado, contribucion: acumulado + contribucion['total'],
+            contribuciones_totales,
+            0
+        )
+        contribuciones_ordenadas = sorted(contribuciones_totales, key=lambda x: (
+            0 if int(x['continent']) == 65 else int(x['continent']) + 1,
+            -float(x['total'])
+        ))
+        rows_per_chunk = 32
+        data_chunks = [contribuciones_ordenadas[i:i + rows_per_chunk] for i in range(0, len(contribuciones_ordenadas), rows_per_chunk)]
 
-        tabla = "📝 **Contribuciones del Día** 📝\n"
-        tabla += "🌍 **Reino**                        | 💰 **Total**   | 🌎 **Continente** \n"
-        tabla += "--------------------------------------------\n"
+        table_header = f"📝 **Contribuciones del Día ({hoy.strftime("%d-%m-%Y")}) en {data_chunks} partes** 📝\n"
+        table_header += f"🌍 **💰 **Total de puntos dados en el día {suma_total: <10.2f}** \n"
+        await ctx.send(table_header)
+        for i, chunk in enumerate(data_chunks):
+            tabla = PrettyTable()
+            tabla.field_names = ["Nombre del Reino", "Contribución", "Continente"]
+            tabla.align = "l"
 
-        for contribucion in contribuciones_ordenadas:
-            nombre = str(contribucion['name'])[:30]
-            total = round(contribucion['total'], 2)
-            continente = str(contribucion['continent'])[:5]
-            tabla += f"| {nombre:<30} | {total: <10.2f} | {continente:<5} |\n"
-            tabla += "--------------------------------------------\n"
-
-        await send_long_message(ctx, f"**Contribuciones del día {hoy}:**\n{tabla}")
+            for item in chunk:
+                tabla.add_row([
+                    item["name"],
+                    f"{item['total']:.2f}",
+                    f"C{item['continent']}"
+                ])
+            await ctx.send(f"**Parte {i+1}/{len(data_chunks)}**\n```{tabla}\n```")
     except Exception as e:
         await ctx.send(f"Error: {e}")
 
