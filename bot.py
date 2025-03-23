@@ -9,13 +9,15 @@ from datetime import datetime, date, timedelta
 from functools import reduce
 from prettytable import PrettyTable
 
+from bot_discord.settings import DISCORD_TOKEN
+
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 intents.members = True
 
-DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+
 
 bot = commands.Bot(command_prefix="/", intents=intents)
 
