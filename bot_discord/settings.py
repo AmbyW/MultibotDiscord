@@ -158,7 +158,7 @@ DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
 log_filename = f"logs/discord_bot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
 
-LOGGING_CONFIG = {
+DISCORD_LOGGING_CONFIG = {
     "version": 1,
     "disabled_existing_loggers": False,
     "formatters": {
@@ -196,4 +196,4 @@ LOGGING_CONFIG = {
     },
 }
 
-dictConfig(LOGGING_CONFIG)
+dictConfig(DISCORD_LOGGING_CONFIG)
