@@ -1,21 +1,28 @@
 import discord
 import calendar
 
+from os import environ as env
 from discord.ext import commands
 from datetime import date
+from django import setup
 
-from bot_discord.settings import DISCORD_TOKEN, logging
+env.setdefault("DJANGO_SETTINGS_MODULE", "bot_discord.settings")
+setup()
+
+from bot_discord.discord_settings import DISCORD_TOKEN, logging
 from bot_discord.utils.land import show_lands_contributions
+from bot_discord.models import DiscordUser
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 intents.members = True
 
+
 logger = logging.getLogger("bot")
 
-bot = commands.Bot(command_prefix="/", intents=intents)
 
+bot = commands.Bot(command_prefix="/", intents=intents)
 
 @bot.command()
 async def points(ctx):

@@ -138,5 +138,3 @@ async def show_lands_contributions(ctx: Context, date_from: date, date_to: date)
                 f"C{item['continent']}"
             ])
         await ctx.send(f"**Parte {i + 1}/{len(data_chunks)}**\n```{tabla}\n```")
-        if i >= 2:
-            break
