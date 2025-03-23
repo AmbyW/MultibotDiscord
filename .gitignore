@@ -1,7 +1,11 @@
 .idea/*
+
+*.sqlite3
 *.db
+
 .envrc
 .env
 
 logs/*
 !logs/.gitkeep
+
