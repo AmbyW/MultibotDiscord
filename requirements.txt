@@ -2,3 +2,4 @@ discord==2.3.2
 prettytable==3.15.1
 requests==2.32.3
 Django==5.1.7
+celery==5.4.0
