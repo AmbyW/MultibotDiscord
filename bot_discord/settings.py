@@ -130,6 +130,29 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Celery
+# ------------------------------------------------------------------------------
+if USE_TZ:
+    CELERY_TIMEZONE = TIME_ZONE
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+CELERY_ACCEPT_CONTENT = ["json"]
+
+CELERY_TASK_SERIALIZER = "json"
+
+CELERY_RESULT_SERIALIZER = "json"
+
+CELERY_TASK_TIME_LIMIT = 5 * 60
+
+CELERY_TASK_SOFT_TIME_LIMIT = 60
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+
+
 # discord stuff
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 
