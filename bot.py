@@ -1,4 +1,3 @@
-import os
 import discord
 import calendar
 import requests
@@ -9,7 +8,7 @@ from datetime import datetime, date, timedelta
 from functools import reduce
 from prettytable import PrettyTable
 
-from bot_discord.settings import DISCORD_TOKEN
+from bot_discord.settings import DISCORD_TOKEN, logging
 
 
 intents = discord.Intents.default()
@@ -17,7 +16,7 @@ intents.messages = True
 intents.message_content = True
 intents.members = True
 
-
+logger = logging.getLogger("bot")
 
 bot = commands.Bot(command_prefix="/", intents=intents)
 
@@ -211,4 +210,4 @@ async def limpiar(ctx, cantidad: int = 1000):
     await ctx.channel.purge(limit=cantidad)
     await ctx.send(f"🧹 Se han eliminado {cantidad} mensajes. 🧹", delete_after=5)
 
-bot.run(DISCORD_TOKEN)
+bot.run(DISCORD_TOKEN, root_logger=True)

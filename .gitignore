@@ -2,3 +2,6 @@
 *.db
 .envrc
 .env
+
+logs/*
+!logs/.gitkeep
